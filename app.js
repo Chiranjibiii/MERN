@@ -1,6 +1,7 @@
 require('dotenv').config()//requiring the env so that we can use those variables of env in app.js 
 const express = require('express')
 const connectToDatabase = require('./Database/index.js')
+const Blog = require('./model/blogModel.js')
 
 const app=express()
 app.use(express.json())
@@ -22,10 +23,17 @@ app.get("/about",(req,res)=>{
     })
 })
 
-app.post("/blog",(req,res)=>{
-    console.log(req.body);
+app.post("/blog",async (req,res)=>{   
+    const{title,subtitle,description,image}=req.body//object destrutcturing
+
+    await Blog.create({
+        title : title, //cloumn name : value
+        subtitle : subtitle, //column name : value
+        description : description, //column name : value
+        image : image //column name : value
+    })
     
-    res.status(200).json({
+    res.status(200).json({  
          message : "Blog api hit sucessfully"
          
     })
