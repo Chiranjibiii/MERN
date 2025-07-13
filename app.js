@@ -5,6 +5,8 @@ const Blog = require('./model/blogModel.js')
 
 const app=express()
 app.use(express.json())
+const {multer,storage}= require('./middleware/multerConfig.js')//importing
+const upload = multer({storage : storage})
 
 connectToDatabase()
 
@@ -17,15 +19,14 @@ app.get("/",(req,res)=>{
 
 
 app.get("/about",(req,res)=>{
-
+    
     res.json({
         message:"This is About  page"
     })
 })
 
-app.post("/blog",async (req,res)=>{   
+app.post("/blog",upload.single('image'), async (req,res)=>{   
     const{title,subtitle,description,image}=req.body//object destrutcturing
-
     await Blog.create({
         title : title, //cloumn name : value
         subtitle : subtitle, //column name : value
