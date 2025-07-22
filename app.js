@@ -26,22 +26,64 @@ app.get("/about",(req,res)=>{
 })
 
 app.post("/blog",upload.single('image'), async (req,res)=>{   
-    const{title,subtitle,description,image}=req.body//object destrutcturing
+    const {title,subtitle,description}= req.body//object destrutcturing
+    const filename=req.file.filename
+
+    if(!title || !subtitle || !description ){
+        return res.status(400).json({
+            message : "Please provide title,subtitle,description"
+        })
+    }
+
     await Blog.create({
         title : title, //cloumn name : value
         subtitle : subtitle, //column name : value
         description : description, //column name : value
-        image : image //column name : value
+        image : filename //column name : value
     })
-    
+
     res.status(200).json({  
          message : "Blog api hit sucessfully"
          
     })
 })
 
+ app.get("/blog",async (req,res)=>{
+    const blog = await Blog.find()//Blogs returns array     
+    res.status(200).json({
+        message : "Blog fetched sucessfully",
+        data : blog
+    })
+})
+
+app.get('/blog/:id',async(req,res)=>{
+    const id=req.params.id 
+   const blog = await Blog.findById(id) //returns object
+   if(!blog){
+        res.status(404).json({
+            message:"Data not found"
+        })
+   }
+   else{
+    res.status(200).json({
+        message : "Fetched sucessfully",    
+        data : blog
+    })
+   }
+    
+})
+ 
+app.delete('/blog/:id',async (req,res)=>{
+    const id=req.params.id
+    await Blog.findByIdAndDelete(id)
+    res.status(200).json({
+        message : 'Blog deleted Sucessfully'
+    })
+})
 
 
+
+app.use(express.static('./storage'))
 app.listen(process.env.PORT,()=>{
     console.log("Node js has started in port 3000");
     
