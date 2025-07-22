@@ -5,7 +5,7 @@ const storage = multer.diskStorage({//method
         cb(null,'./storage')//cb(error,success)
     },
     filename(req,file,cb){//to change name of the file in destination 
-        cb(null,"Chiranjibi-"+ file.originalname)//add Chiranjibi- in the org filename
+        cb(null,Date.now()+"-"+ file.originalname)//Date.now() update the date so that we will have different file name 
 
     }
 })
